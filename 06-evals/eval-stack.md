@@ -4,7 +4,7 @@
 
 ## What "good" means
 
-_The user promise and the top trust metrics you're protecting._
+Every priority Juno posts either cites a real strategy clause or honestly labels itself `unverified` — never a confident guess with no backing. The trust metrics that matter most: citation rate on approved priorities, the 7-day reversal rate (target under 10%, per the AWSpec §9 log), and the `unverified` rate over time — a rising trend means the strategy doc or ticket corpus has gone stale, not that Juno is getting worse.
 
 _____
 
@@ -12,18 +12,18 @@ _____
 
 | Layer | Evaluator | What it catches | Threshold / gate |
 |---|---|---|---|
-| _Code-based_ | _…_ | _…_ | _…_ |
-| _LLM-as-judge_ | _…_ | _…_ | _…_ |
-| _Human_ | _…_ | _…_ | _…_ |
+| **Code-based** | Automated checks on every run | Missing citation, malformed output schema, `write_roadmap()` called without a PM confirm event, latency/cost breaches (AWSpec §7) | Hard gate — any P0 guardrail failure blocks release |
+| **LLM-as-judge** | A second model scores rationale quality against the retrieved clause | A card that's technically cited but the clause doesn't actually support the ranking — citation present, reasoning weak or off-topic | Score below 3/5 routes the item to human review before it can enter the golden set as a passing case |
+| **Human** | Weekly spot-check against `06-evals/human-rubric.md` (dimensions, anchors, and disagreement protocol live there, not repeated here) | Judgment calls a machine can't make — actual relevance, tone, whether the priority is genuinely right | Must clear the rubric's pass bar before a prompt, model, or harness change ships |
 
 ## Golden set
 
-_What's in it, how big, and how it's maintained._
+A curated set of past `#escalations` threads with a known-correct priority rank and citation, seeded from real production cases — including past misses — rather than synthetic examples. Every prompt, model, or harness change is regression-tested against this set before shipping. Grown continuously: every human-rubric disagreement item that gets a resolved score (per the rubric's disagreement protocol) is added. The PM owns it.
 
 _____
 
 ## Release gate
 
-_What must pass before Juno ships._
+A change to Juno's prompt, model, or harness ships only if: all code-based checks pass at 100%, the LLM-judge score on the golden set doesn't regress, and the weekly human rubric review clears its pass bar. Any one failing blocks the release. Two consecutive weekly misses on the human rubric (or an equivalent nightly-check pattern) trigger the first optimization lever — prompt, then model, then data, then architecture — before anything ships.
 
 _____
